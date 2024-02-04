@@ -1,0 +1,58 @@
+name: CI - PR
+
+on:
+  pull_request:
+    paths:
+      - .github/**
+      - aioicloud/**
+      - tests/**
+      - pytest.ini
+      - requirements-test.txt
+      - /*requirements.txt
+      - run-ci.sh
+  workflow_dispatch:
+jobs:
+  cache-requirements-install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        id: cache-dependencies
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: |
+          pip install -r requirements-test.txt
+  test:
+    needs: cache-requirements-install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restore pip cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-test.txt
+      - name: Test with pytest
+        run: |
+          ./run-ci.sh

@@ -1,15 +1,11 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 name: CI - Main
 
 on:
   push:
     branches: [main]
     paths:
-      - library-name/**
+      - aioicloud/**
       - tests/**
-      - pylintrc
       - pytest.ini
       - requirements-test.txt
       - /*requirements.txt
@@ -57,9 +53,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements-test.txt
-      - name: Test with pytest
+      - name: Test
         run: |
-          pylint library-name/ tests/ && pytest
+          ./run-ci.sh
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
         if: ${{ success() }}

@@ -1,6 +1,6 @@
 [run]
  include =
-    library-name/*
+    aioicloud/*
  [report]
  include =
-    library-name/*
+    aioicloud/*

@@ -1,16 +1,17 @@
-from setuptools import setup, find_packages
 from codecs import open
 
-REPO_URL = "https://github.com/mandarons/library-name"
-VERSION = "0.3.1"
+from setuptools import find_packages, setup
 
-with open("README.md", "r") as fh:
+REPO_URL = "https://github.com/mandarons/aioicloud"
+VERSION = "0.0.0"
+
+with open("README.md") as fh:
     long_description = fh.read()
-with open("requirements.txt", "r") as fh:
+with open("requirements.txt") as fh:
     required = fh.read().splitlines()
 
 setup(
-    name="library-name",
+    name="aioicloud",
     version=VERSION,
     author="Mandar Patil",
     author_email="mandarons@pm.me",
@@ -30,6 +31,6 @@ setup(
     # TODO remove if there is no entry point
     entry_points="""
     [console_scripts]
-    icloud=library-name.cmdline:main
+    icloud=aioicloud.cmdline:main
     """,
 )

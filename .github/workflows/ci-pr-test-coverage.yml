@@ -35,6 +35,8 @@ jobs:
           pip install -r requirements-test.txt
   test:
     needs: cache-requirements-install
+    container:
+      image: mandarons/python
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code

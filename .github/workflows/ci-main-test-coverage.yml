@@ -57,7 +57,7 @@ jobs:
         run: |
           pytest
       - name: Upload coverage artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
           name: coverage-output
@@ -106,6 +106,10 @@ jobs:
         with:
           name: badges-output
           path: badges
+      - name: Create reports directory
+        run: |
+          mkdir ./reports
+          cp -r coverage allure-history badges ./reports
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         if: always()
@@ -113,27 +117,11 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
-      - name: Publish test report to gh-pages
+      - name: Publish reports to gh-pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           publish_branch: gh-pages
-          publish_dir: allure-history
-          destination_dir: test-results
-      - name: Publish test coverage to gh-pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          publish_branch: gh-pages
-          publish_dir: coverage
-          destination_dir: test-coverage
-      - name: Publish badges to gh-pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          publish_branch: gh-pages
-          publish_dir: badges
-          destination_dir: badges
+          publish_dir: reports
+          destination_dir: reports

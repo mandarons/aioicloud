@@ -55,7 +55,7 @@ jobs:
           pip install -r requirements-test.txt
       - name: Test
         run: |
-          pytest
+          pytest && rm htmlcov/.gitignore
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
         if: ${{ success() }}
@@ -109,7 +109,9 @@ jobs:
       - name: Create reports directory
         run: |
           mkdir ./reports
-          cp -r coverage allure-history badges ./reports
+          mv allure-history ./reports/test-results
+          mv coverage ./reports/test-coverage
+          mv badges ./reports/badges
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         if: always()
@@ -123,5 +125,5 @@ jobs:
         with:
           deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           publish_branch: gh-pages
-          publish_dir: reports
-          destination_dir: reports
+          publish_dir: ./reports
+

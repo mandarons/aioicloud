@@ -10,6 +10,7 @@ on:
       - requirements-test.txt
       - /*requirements.txt
       - run-ci.sh
+      - .github/workflows/ci-main*
   workflow_dispatch:
 jobs:
   cache-requirements-install:

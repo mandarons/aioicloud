@@ -56,6 +56,13 @@ jobs:
       - name: Test
         run: |
           pytest
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v3
+        if: ${{ success() }}
+        with:
+          name: coverage-output
+          path: htmlcov
+          retention-days: 1
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@master
         if: always()
@@ -74,27 +81,31 @@ jobs:
           name: test-output
           path: allure-history/test-results/
           retention-days: 1
-      - name: Upload coverage artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-output
-          path: htmlcov
-          retention-days: 1
       - name: Upload badges artifacts
         uses: actions/upload-artifact@v4
         with:
           name: badges-output
           path: badges
           retention-days: 1
-  publish-test-report:
+  publish:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-output
+          path: coverage
       - name: Download test artifacts
         uses: actions/download-artifact@v4
         with:
           name: test-output
           path: allure-history
+      - name: Download badges artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: badges-output
+          path: badges
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         if: always()
@@ -110,22 +121,6 @@ jobs:
           publish_branch: gh-pages
           publish_dir: allure-history
           destination_dir: test-results
-  publish-coverage-report:
-    needs: publish-test-report
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download coverage artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-output
-          path: coverage
-      - name: Checkout gh-pages
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
       - name: Publish test coverage to gh-pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
@@ -134,22 +129,6 @@ jobs:
           publish_branch: gh-pages
           publish_dir: coverage
           destination_dir: test-coverage
-  publish-badges:
-    needs: publish-coverage-report
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download badges artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: badges-output
-          path: badges
-      - name: Checkout gh-pages
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
       - name: Publish badges to gh-pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3

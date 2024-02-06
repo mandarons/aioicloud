@@ -1,0 +1,1 @@
+{"0bfdfc3b314f21db93d8ee59e78e078d":{"statistic":{"failed":0,"broken":0,"skipped":0,"passed":1,"unknown":0,"total":1},"items":[{"uid":"8973d39506ec75d9","reportUrl":"https://mandarons.github.io/aioicloud/test-results/13//#testresult/8973d39506ec75d9","status":"passed","time":{"start":1707238211803,"stop":1707238211804,"duration":1}}]}}
